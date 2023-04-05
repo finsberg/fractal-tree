@@ -7,6 +7,10 @@ copyright: "2023"
 only_build_toc_files: true
 
 
+execute:
+  execute_notebooks: cache
+  timeout: 3000
+
 # Information about where the book exists on the web
 repository:
   url: https://github.com/finsberg/fractal-tree # Online location of your book
