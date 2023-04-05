@@ -22,6 +22,7 @@ test = [
 ]
 demo = [
     "meshio",
+    "fenics-pulse",
     "cardiac-geometries[gmsh]",
 ]
 dev = [
