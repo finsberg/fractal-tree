@@ -117,24 +117,23 @@ def run_generation(
 
 def save_tree(
     filename: Union[Path, str],
-    nodes: Nodes,
+    nodes: np.ndarray,
+    end_nodes: list[int],
     lines: list[tuple[int, int]],
     save_paraview: bool = True,
 ):
     if save_paraview:
         logger.info("Finished growing, writing paraview file")
-        xyz = np.zeros((len(nodes.nodes), 3))
-        for i in range(len(nodes.nodes)):
-            xyz[i, :] = nodes.nodes[i]
-        write_line_VTU(xyz, lines, Path(filename).with_suffix(".vtu"))
+
+        write_line_VTU(nodes, lines, Path(filename).with_suffix(".vtu"))
     name = Path(filename).name
     np.savetxt(
         Path(filename).with_name(name + "_lines").with_suffix(".txt"), lines, fmt="%d"
     )
-    np.savetxt(Path(filename).with_name(name + "_xyz").with_suffix(".txt"), xyz)
+    np.savetxt(Path(filename).with_name(name + "_xyz").with_suffix(".txt"), nodes)
     np.savetxt(
         Path(filename).with_name(name + "_endnodes").with_suffix(".txt"),
-        nodes.end_nodes,
+        end_nodes,
         fmt="%d",
     )
 
@@ -222,7 +221,9 @@ class FractalTreeParameters:
 
 class FractalTreeResult(NamedTuple):
     branches: dict[int, Branch]
-    nodes: Nodes
+    nodes: np.ndarray
+    end_nodes: list[int]
+    lines: list[tuple[int, int]]
 
 
 def node_direction(src: np.ndarray, target: Optional[np.ndarray] = None) -> np.ndarray:
@@ -319,12 +320,16 @@ def generate_fractal_tree(
             branches_to_grow, parameters, branches, last_branch, mesh, nodes, lines
         )
 
+    xyz = np.array(nodes.nodes)
+
     if parameters.save:
         save_tree(
             filename=parameters.filename,
-            nodes=nodes,
+            nodes=xyz,
+            end_nodes=nodes.end_nodes,
             lines=lines,
             save_paraview=parameters.save_paraview,
         )
-
-    return FractalTreeResult(branches, nodes)
+    return FractalTreeResult(
+        branches=branches, nodes=xyz, end_nodes=nodes.end_nodes, lines=lines
+    )
