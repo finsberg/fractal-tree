@@ -30,14 +30,14 @@ def test_integration(filename):
     mesh = Mesh(verts=msh.points, connectivity=msh.cells[0].data)
 
     np.random.seed(1234)
-    branches, nodes = generate_fractal_tree(mesh, param)
+    results = generate_fractal_tree(mesh, param)
 
-    assert len(branches) == 893
-    assert len(nodes.nodes) == 5822
-    assert np.allclose(nodes.nodes[0], [-1, 0, 0])
-    assert np.allclose(nodes.nodes[2], [-0.9990874, 0.0, 0.01975606])
-    assert branches[0].nodes == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    assert branches[0].triangles == [
+    assert len(results.branches) == 893
+    assert len(results.nodes) == 5822
+    assert np.allclose(results.nodes[0], [-1, 0, 0])
+    assert np.allclose(results.nodes[2], [-0.9990874, 0.0, 0.01975606])
+    assert results.branches[0].nodes == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    assert results.branches[0].triangles == [
         3122,
         3122,
         3122,
@@ -49,4 +49,4 @@ def test_integration(filename):
         614,
         614,
     ]
-    assert branches[0].tri == 614
+    assert results.branches[0].tri == 614
