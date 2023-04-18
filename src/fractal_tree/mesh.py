@@ -119,6 +119,7 @@ class Mesh:
 
         # Get triangles connected to that node
         triangles = self.node_to_tri[node]
+
         if len(triangles) == 0:
             raise InvalidNodeError(
                 f"node {node} with point {point} not connected to triangles, check your mesh"
